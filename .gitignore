@@ -1,0 +1,15 @@
+checkpoint/
+checkpoint1/
+checkpoint2/
+checkpoint3/
+checkpoint4/
+checkpoint5/
+data/
+history/
+temp/
+
+*.pyc
+checkpoint_epoch_0
+AF1
+__pycache__/
+.idea/
