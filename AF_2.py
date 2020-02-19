@@ -3,18 +3,18 @@ import torch.nn as nn
 import torch.nn.functional as F
 import Incep
 import matplotlib.pyplot as plt
-from scipy import misc 
+from scipy import misc
+
+
 class AF2(nn.Module):
 
-    def __init__(self, num_classes=26, aux_logits=False, transform_input=False,ret = False): #ccc changed here
+    def __init__(self, num_classes=26, aux_logits=False, transform_input=False,ret = False):  # ccc changed here
         super(AF2, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
         self.MNet = Incep.Inception3(ret = True)
 
-
-
-        self.Att = BasicConv2d(768,8,kernel_size=1)
+        self.Att = BasicConv2d(768, 8, kernel_size=1)
         self.Incep2 = nn.Sequential(InceptionB(288),InceptionC(768, channels_7x7=128),
                         InceptionC(768, channels_7x7=160),
                         InceptionC(768, channels_7x7=160),InceptionC(768, channels_7x7=192))

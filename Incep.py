@@ -32,8 +32,8 @@ def inception_v3(pretrained=False, **kwargs):
 
 
 class Inception3(nn.Module):
-
-    def __init__(self,ret = False, nfc = False, num_classes=26, aux_logits=False, transform_input=False): #ccc changed here
+    # the author 'ccc' changed here
+    def __init__(self, ret=False, nfc=False, num_classes=26, aux_logits=False, transform_input=False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
@@ -50,13 +50,13 @@ class Inception3(nn.Module):
         self.Mixed_6c = InceptionC(768, channels_7x7=160)
         self.Mixed_6d = InceptionC(768, channels_7x7=160)
         self.Mixed_6e = InceptionC(768, channels_7x7=192)
+
         if aux_logits:
             self.AuxLogits = InceptionAux(768, num_classes)
         self.Mixed_7a = InceptionD(768)
         self.Mixed_7b = InceptionE(1280)
         self.Mixed_7c = InceptionE(2048)
         self.fc = nn.Linear(2048, num_classes)
-
 
         self.ret = ret
         self.nfc = nfc
@@ -119,7 +119,7 @@ class Inception3(nn.Module):
         z = self.Mixed_7c(z)
         # 8 x 8 x 2048
         if self.ret:
-            return x,y,z
+            return x, y, z
         if self.nfc:
             return z
 
