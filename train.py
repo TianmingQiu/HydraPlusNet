@@ -19,15 +19,14 @@ import dataload
 
 from torch.autograd import Variable
 import argparse
-from visdom import Visdom
 import numpy as np
-
-
-viz = Visdom()
-win = viz.line(
-    Y=np.array([0.2]),
-    name="1"
-)
+# from visdom import Visdom
+#
+# viz = Visdom()
+# win = viz.line(
+#     Y=np.array([0.2]),
+#     name="1"
+# )
 
 
 parser = argparse.ArgumentParser()
@@ -191,20 +190,21 @@ for epoch in range(1000):
         # print(outputs)
 
         loss = criterion(outputs, labels)
+        print(loss)
         # print(loss)
         loss.backward()
         optimizer.step()
 
         # print statistics
         running_loss += loss.data[0]
-        if i % 1000 == 0: # print every 1000 mini-batches
-            print('[ %d %5d] loss: %.6f' % ( epoch,i+1, running_loss / 100))
-            viz.updateTrace(
-                X=np.array([epoch+i/5000.0]),
-                Y=np.array([running_loss]),
-                win=win,
-                name="1"
-            )
+        if i % 1000 == 0:  # print every 1000 mini-batches
+            print('[ %d %5d] loss: %.6f' % (epoch, i+1, running_loss / 100))
+            # viz.updateTrace(
+            #     X=np.array([epoch+i/5000.0]),
+            #     Y=np.array([running_loss]),
+            #     win=win,
+            #     name="1"
+            # )
             running_loss = 0.0
 
     if epoch % 5 == 0:

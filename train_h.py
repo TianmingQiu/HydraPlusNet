@@ -96,7 +96,7 @@ imgLoader = torch.utils.data.DataLoader(
          batch_size= 10, shuffle= True, num_workers= 2)
 
 
-print len(set)
+print(len(set))
 
 
 '''dataiter = iter(imgLoader)
