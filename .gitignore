@@ -4,3 +4,4 @@ temp/
 *.pyc
 __pycache__/
 .idea/
+checkpoint*
