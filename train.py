@@ -194,6 +194,9 @@ for epoch in range(1000):
         optimizer.step()
 
         # print statistics
+
+        # running_loss += loss.data[0]
+
         if i % 1000 == 0:  # print every 1000 mini-batches
             print('[ %d %5d] loss: %.6f' % (epoch, i+1, loss))
             # viz.updateTrace(
@@ -202,6 +205,9 @@ for epoch in range(1000):
             #     win=win,
             #     name="1"
             # )
+
+            # running_loss = 0.0
+
 
     if epoch % 5 == 0:
         checkpoint(0)
