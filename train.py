@@ -70,7 +70,7 @@ data_set = dataload.myImageFloder(
 
 imgLoader = torch.utils.data.DataLoader(
     data_set,
-    batch_size=16, shuffle=True, num_workers=2
+    batch_size=8, shuffle=True, num_workers=2
 )
 
 print("image numbers {})".format(len(data_set)))
@@ -190,22 +190,18 @@ for epoch in range(1000):
         # print(outputs)
 
         loss = criterion(outputs, labels)
-        print(loss)
-        # print(loss)
         loss.backward()
         optimizer.step()
 
         # print statistics
-        running_loss += loss.data[0]
         if i % 1000 == 0:  # print every 1000 mini-batches
-            print('[ %d %5d] loss: %.6f' % (epoch, i+1, running_loss / 100))
+            print('[ %d %5d] loss: %.6f' % (epoch, i+1, loss))
             # viz.updateTrace(
             #     X=np.array([epoch+i/5000.0]),
             #     Y=np.array([running_loss]),
             #     win=win,
             #     name="1"
             # )
-            running_loss = 0.0
 
     if epoch % 5 == 0:
         checkpoint(0)

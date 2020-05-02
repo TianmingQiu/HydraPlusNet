@@ -51,7 +51,7 @@ imgLoader = torch.utils.data.DataLoader(
          batch_size= 1, shuffle= True, num_workers= 2)
 
 
-print len(set)
+print(len(set))
 
 mat = scio.loadmat("./data/PA-100K/annotation/annotation.mat")
 att = mat["attributes"]
@@ -75,6 +75,7 @@ if args.m == 'MNet':
     net = Incep.Inception3()
 
 net.load_state_dict(torch.load(path))
+print("para_load_done")
 net.eval()
 net.cuda()
 
@@ -103,6 +104,7 @@ while count < 10000:
     f = 0.1
 
     i = 0
+    print(count)
     for item in outputs[0]:
             if item.data[0] > 0 :
                 f = f + 1
