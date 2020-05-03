@@ -44,11 +44,11 @@ class myImageFloder(data.Dataset):
         self.classes = fn['attributes']
 
     def __getitem__(self, index):
-        fn, label = self.imgs[index]
-        img = self.loader(os.path.join(self.root, fn))
+        filename, label = self.imgs[index]
+        img = self.loader(os.path.join(self.root, filename))
         if self.transform is not None:
             img = self.transform(img)
-        return img, torch.Tensor(label)
+        return img, torch.Tensor(label), filename
 
     def __len__(self):
         return len(self.imgs)

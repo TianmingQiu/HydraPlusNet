@@ -28,6 +28,8 @@ class AF2(nn.Module):
 
         self.patch = nn.ReflectionPad2d((0,1,0,1))
         self.ret = ret
+
+        """
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
                 import scipy.stats as stats
@@ -39,6 +41,7 @@ class AF2(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
+        """
 
     def forward(self, x):
         if self.transform_input:
@@ -107,7 +110,7 @@ class AF2(nn.Module):
 
 
         if self.ret:
-            return ret
+            return ret, attentive
         # ret 8 x 8 x(2048 x 24)
         ret = F.avg_pool2d(ret, kernel_size=8)
 

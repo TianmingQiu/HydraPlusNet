@@ -22,16 +22,12 @@ import AF_2
 import AF_3
 
 import time
+import pdb
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m',help = "choose model",choices = ['AF1','AF2','AF3','HP','MNet'],required = True)
 parser.add_argument('-p',help = 'wight file path',required = True)
 args = parser.parse_args()
-
-
-
-
-
 
 
 mytransform = transforms.Compose([
@@ -76,9 +72,9 @@ if args.m == 'MNet':
 
 net.load_state_dict(torch.load(path))
 print("para_load_done")
+
 net.eval()
 net.cuda()
-
 dataiter = iter(imgLoader)
 
 count = 0
@@ -92,10 +88,10 @@ Acc = 0.0
 Prec = 0.0
 Rec = 0.0
 while count < 10000:
-    images,labels = dataiter.next()
+    images,labels, filename = dataiter.next()
     inputs, labels = Variable(images,volatile = True).cuda(), Variable(labels).cuda()
     #a = time.time()
-    outputs = net(inputs)
+    outputs, attention1, attention2, attention3 = net(inputs)
     #b = time.time()
     #print(b-a)    
     Yandf = 0.1
@@ -106,25 +102,25 @@ while count < 10000:
     i = 0
     print(count)
     for item in outputs[0]:
-            if item.data[0] > 0 :
-                f = f + 1
-                Yorf = Yorf + 1
-                if labels[0][i].data[0] == 1:
-                    TP[i] = TP[i] + 1
-                    P[i] = P[i] + 1
-                    Y = Y + 1
-                    Yandf = Yandf + 1
-                else : 
-                    N[i] = N[i]  + 1
+        if item.data.item() > 0 :
+            f = f + 1
+            Yorf = Yorf + 1
+            if labels[0][i].data.item() == 1:
+                TP[i] = TP[i] + 1
+                P[i] = P[i] + 1
+                Y = Y + 1
+                Yandf = Yandf + 1
             else :
-                if labels[0][i].data[0] == 0 :
-                    TN[i] = TN[i] + 1
-                    N[i] = N[i] + 1
-                else:
-                    P[i] = P[i] + 1
-                    Yorf = Yorf + 1
-                    Y = Y + 1
-            i = i + 1 
+                N[i] = N[i]  + 1
+        else :
+            if labels[0][i].data.item() == 0 :
+                TN[i] = TN[i] + 1
+                N[i] = N[i] + 1
+            else:
+                P[i] = P[i] + 1
+                Yorf = Yorf + 1
+                Y = Y + 1
+        i = i + 1
     Acc = Acc +Yandf/Yorf
     Prec = Prec + Yandf/f
     Rec = Rec + Yandf/Y

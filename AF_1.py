@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import Incep
 import matplotlib.pyplot as plt
 from scipy import misc
+import scipy.stats as stats
 
 
 class AF1(nn.Module):
@@ -42,9 +43,10 @@ class AF1(nn.Module):
 
         self.ret = ret
 
+        """
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
-                import scipy.stats as stats
+                
                 stddev = m.stddev if hasattr(m, 'stddev') else 0.1
                 X = stats.truncnorm(-2, 2, scale=stddev)
                 values = torch.Tensor(X.rvs(m.weight.data.numel()))
@@ -53,6 +55,7 @@ class AF1(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
+        """
 
     def forward(self, x):
         if self.transform_input:
@@ -111,7 +114,7 @@ class AF1(nn.Module):
             ret = torch.cat((ret, R3), dim=1)
 
         if self.ret:
-            return ret
+            return ret, attentive
         # ret 8 x 8 x(2048 x 24)
         ret = F.avg_pool2d(ret, kernel_size=8)
 
@@ -123,6 +126,7 @@ class AF1(nn.Module):
 
         ret = self.fc(ret)
         # 1000 (num_classes)
+        print(ret.size(), attentive.size())
 
         return ret
 

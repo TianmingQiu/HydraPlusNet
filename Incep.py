@@ -1,8 +1,8 @@
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
+import scipy.stats as stats
 
 
 __all__ = ['Inception3', 'inception_v3']
@@ -60,9 +60,11 @@ class Inception3(nn.Module):
 
         self.ret = ret
         self.nfc = nfc
+
+        """
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
-                import scipy.stats as stats
+                
                 stddev = m.stddev if hasattr(m, 'stddev') else 0.1
                 X = stats.truncnorm(-2, 2, scale=stddev)
                 values = torch.Tensor(X.rvs(m.weight.data.numel()))
@@ -71,6 +73,8 @@ class Inception3(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
+                
+        """
 
     def forward(self, x):
         if self.transform_input:
