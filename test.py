@@ -23,6 +23,7 @@ import AF_3
 
 import time
 import pdb
+import pickle
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m',help = "choose model",choices = ['AF1','AF2','AF3','HP','MNet'],required = True)
@@ -87,46 +88,55 @@ N  = [0.0] * 26
 Acc = 0.0
 Prec = 0.0
 Rec = 0.0
-while count < 10000:
-    images,labels, filename = dataiter.next()
-    inputs, labels = Variable(images,volatile = True).cuda(), Variable(labels).cuda()
-    #a = time.time()
-    outputs, attention1, attention2, attention3 = net(inputs)
-    #b = time.time()
-    #print(b-a)    
-    Yandf = 0.1
-    Yorf = 0.1
-    Y = 0.1
-    f = 0.1
+with open("attention_output.pkl", "wb") as pkl_file:
+    while count < 10000:
+        images,labels, filename = dataiter.next()
+        inputs, labels = Variable(images,volatile = True).cuda(), Variable(labels).cuda()
+        #a = time.time()
+        outputs, attention1, attention2, attention3 = net(inputs)
+        out_dict = {
+                "filename": filename,
+                "alpha1": attention1,
+                "alpha2": attention2,
+                "alpha3": attention3
+                }
 
-    i = 0
-    print(count)
-    for item in outputs[0]:
-        if item.data.item() > 0 :
-            f = f + 1
-            Yorf = Yorf + 1
-            if labels[0][i].data.item() == 1:
-                TP[i] = TP[i] + 1
-                P[i] = P[i] + 1
-                Y = Y + 1
-                Yandf = Yandf + 1
-            else :
-                N[i] = N[i]  + 1
-        else :
-            if labels[0][i].data.item() == 0 :
-                TN[i] = TN[i] + 1
-                N[i] = N[i] + 1
-            else:
-                P[i] = P[i] + 1
+        pickle.dump(out_dict, pkl_file)  # write attention results into pkl file
+        #b = time.time()
+        #print(b-a)    
+        Yandf = 0.1
+        Yorf = 0.1
+        Y = 0.1
+        f = 0.1
+
+        i = 0
+        print(count)
+        for item in outputs[0]:
+            if item.data.item() > 0 :
+                f = f + 1
                 Yorf = Yorf + 1
-                Y = Y + 1
-        i = i + 1
-    Acc = Acc +Yandf/Yorf
-    Prec = Prec + Yandf/f
-    Rec = Rec + Yandf/Y
-    if count % 1000 == 0:
-        print(count)      
-    count = count + 1
+                if labels[0][i].data.item() == 1:
+                    TP[i] = TP[i] + 1
+                    P[i] = P[i] + 1
+                    Y = Y + 1
+                    Yandf = Yandf + 1
+                else :
+                    N[i] = N[i]  + 1
+            else :
+                if labels[0][i].data.item() == 0 :
+                    TN[i] = TN[i] + 1
+                    N[i] = N[i] + 1
+                else:
+                    P[i] = P[i] + 1
+                    Yorf = Yorf + 1
+                    Y = Y + 1
+            i = i + 1
+        Acc = Acc +Yandf/Yorf
+        Prec = Prec + Yandf/f
+        Rec = Rec + Yandf/Y
+        if count % 1000 == 0:
+            print(count)      
+        count = count + 1
 
 Accuracy = 0
 print(TP)
