@@ -20,21 +20,7 @@ Download [link](https://drive.google.com/drive/folders/0B5_Ra3JsEOyOUlhKM0VPZ1ZW
 |----------release_data  
 
 ## 1.train  
+```shell script
+CUDA_VISIBLE_DEVICES=6,7 python train.py -m MNet -bs 4 -lr 0.01 -nw 4 -mGPUs
+```
 
-### 1.train init weights  
-    python train.py -m {AF1|AF2|AF3|HP|MNet} [-mpath  MNet_weight] \
-    [-af1path AF1_weight -af2path AF2_weight -af3path AF3_weight]   
-#### example:  
-    python train.py -m AF1 -mpath MNet/checkpoint_epoch_0  
-### 2. fine-tuning existing checkpoints  
-    python train.py -m {AF1|AF2|AF3|HP|MNet}  -p checkpointpath  
-#### example:  
-    python train.py -m AF1 -p AF1/checkpoint_epoch_0  
-## 2.test  
-    python test.py -m {AF1|AF2|AF3|HP|MNet} -p checkpointpath  
-#### example:  
-    python test.py -m AF1 -p AF1/checkpoint_epoch_0  
-## 3.show  
-    python show.py -m {AF1|AF2|AF3|HP|MNet} -p checkpointpath  
-#### example:  
-    python show.py -m AF1 -p AF1/checkpoint_epoch_0  

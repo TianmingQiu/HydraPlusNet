@@ -18,7 +18,7 @@ import dataload
 import Hydraplus
 import Incep
 import AF_1
-import AF_2
+import AF
 import AF_3
 
 import time
@@ -63,7 +63,7 @@ path = args.p
 if args.m == 'AF1':
     net = AF_1.AF1()
 if args.m == 'AF2':
-    net = AF_2.AF2()
+    net = AF.AF2()
 if args.m == 'AF3':
     net = AF_3.AF3()
 if args.m == 'HP':

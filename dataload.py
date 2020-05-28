@@ -48,7 +48,7 @@ class myImageFloder(data.Dataset):
         img = self.loader(os.path.join(self.root, filename))
         if self.transform is not None:
             img = self.transform(img)
-        return img, torch.Tensor(label), filename
+        return img, torch.Tensor(label), filename  # todo: for testing visualization, it needs filename
 
     def __len__(self):
         return len(self.imgs)
@@ -71,7 +71,11 @@ if __name__ == '__main__':
     )
 
     # torch.utils.data.DataLoader
-    set = myImageFloder(root = "./data/PA-100K/release_data/release_data", label = "./data/PA-100K/annotation/annotation.mat", transform = mytransform )
+    set = myImageFloder(
+        root="./data/PA-100K/release_data/release_data",
+        label="./data/PA-100K/annotation/annotation.mat",
+        transform=mytransform
+    )
     imgLoader = torch.utils.data.DataLoader(
             set, 
             batch_size= 1, shuffle= False, num_workers= 2)
