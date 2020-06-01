@@ -102,18 +102,24 @@ def main():
     Acc = 0.0
     Prec = 0.0
     Rec = 0.0
-    with open("attention_output.pkl", "wb") as pkl_file:
-        while count < 100:
-        # while count < len(test_set):
+    with open('result/' + args.m + '_att_output.pkl', "wb") as pkl_file:
+        while count < len(test_set):
             images, labels, filename = dataiter.next()
             inputs, labels = Variable(images, volatile=True).cuda(), Variable(labels).cuda()
-            outputs, attention3 = net(inputs)
-            out_dict = {
-                    "filename": filename,
-                    # "alpha1": attention1,
-                    # "alpha2": attention2,
-                    "alpha3": attention3.cpu()
-                    }
+            if args.m == 'HP':
+                outputs, att1, att2, att3 = net(inputs)
+                out_dict = {
+                        "filename": filename,
+                        "alpha1": att1.cpu(),
+                        "alpha2": att2.cpu(),
+                        "alpha3": att3.cpu()
+                        }
+            elif 'AF' in args.m:
+                outputs, att = net(inputs)
+                out_dict = {
+                        "filename": filename,
+                        args.m: att.cpu()
+                        }
 
             pickle.dump(out_dict, pkl_file)  # write attention results into pkl file
 
