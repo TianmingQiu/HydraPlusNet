@@ -4,5 +4,7 @@ temp/
 *.pyc
 __pycache__/
 .idea/
-checkpoint*
-att_test/
+checkpoint/*
+hp_venv/
+result/
+

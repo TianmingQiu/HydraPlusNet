@@ -62,9 +62,9 @@ def parse_args():
 
 
 def checkpoint_save(args_m, state_dict, epoch):
-    if not os.path.exists("checkpoint/" + args_m):
-        os.mkdir("checkpoint/" + args_m)
-    save_path = "./checkpoint/" + args_m + "/checkpoint_epoch_{}".format(epoch)
+    # if not os.path.exists("checkpoint/" + args_m):
+    #     os.mkdir("checkpoint/" + args_m)
+    save_path = "./checkpoint/" + args_m + "_epoch_{}".format(epoch)
     torch.save(state_dict, save_path)
 
 
@@ -103,7 +103,7 @@ def main():
         if not args.r:
             net.apply(weight_init)
     elif 'AF' in args.m:
-        net = AF(args.m)
+        net = AF(af_name=args.m)
         if not args.r:
             net.MNet.load_state_dict(torch.load(args.mpath))
 
@@ -130,8 +130,14 @@ def main():
             param.requires_grad = False
 
     # resume training and load the checkpoint from last training
+    start_epoch = 0
     if args.r:
         net.load_state_dict(torch.load(args.checkpoint))
+
+        # reset the start epoch
+        numeric_filter = filter(str.isdigit, args.checkpoint)
+        numeric_string = "".join(numeric_filter)
+        start_epoch = int(numeric_string) + 1
 
     net.cuda()
     if args.mGPUs:
@@ -163,7 +169,7 @@ def main():
                                 momentum=0.9)
 
     running_loss = 0.0
-    for epoch in range(1000):
+    for epoch in range(start_epoch, 1000):
         for i, data in enumerate(imgLoader, 0):
             # get the inputs
             inputs, labels, _ = data
@@ -186,9 +192,8 @@ def main():
             # running_loss += loss.data[0]
             # running_loss += loss.item()
 
-            if i % 100 == 0:  # todo: print every 1000 mini-batches
-                # todo: if mgpus, then loss need to be averaged
-                print('[ Epoch %d Pic %5d] loss: %.6f' % (epoch, i + 1, loss))
+            if i % 1000 == 0:  # todo: print every 1000 mini-batches
+                print('[  %d  %5d] loss: %.6f' % (epoch, i + 1, loss))
                 # viz.updateTrace(
                 #     X=np.array([epoch+i/5000.0]),
                 #     Y=np.array([running_loss]),
@@ -197,14 +202,6 @@ def main():
                 # )
                 # (epoch + 1, i + 1, running_loss / 2000))
                 # running_loss = 0.0
-
-                if args.mGPUs:
-                    checkpoint_save(args.m, net.module.state_dict(), epoch)
-                else:
-                    checkpoint_save(args.m, net.state_dict(), epoch)
-
-                for param_group in optimizer.param_groups:
-                    param_group['lr'] = param_group['lr'] * 0.95
 
         if epoch % 5 == 0:
             if args.mGPUs:
