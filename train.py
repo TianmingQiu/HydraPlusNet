@@ -15,10 +15,10 @@ import torch.nn as nn
 import scipy.io as scio
 import torchvision.transforms as transforms
 
-from AF import AF
-from MNet import MNet
-from Hydraplus import HP
-import dataload
+from lib.AF import AF
+from lib.MNet import MNet
+from lib.Hydraplus import HP
+from lib import dataload
 
 from torch.autograd import Variable
 import argparse
@@ -38,19 +38,19 @@ def parse_args():
     parser.add_argument('-m', help="choose model", choices=['MNet', 'AF1', 'AF2', 'AF3', 'HP'])
 
     # pre-trained checkpoint
-    parser.add_argument('-r', help="resume training", default=False)
-    parser.add_argument('-checkpoint', help="load weight path", default=None)
-    parser.add_argument('-mpath', help="load MNet weight path", default=None)
-    parser.add_argument('-af1path', help="load AF1 weight path", default=None)
-    parser.add_argument('-af2path', help="load AF2 weight path", default=None)
-    parser.add_argument('-af3path', help="load AF3 weight path", default=None)
+    parser.add_argument('-r', dest='r', help="resume training", default=False)
+    parser.add_argument('-checkpoint', dest='checkpoint', help="load weight path", default=None)
+    parser.add_argument('-mpath', dest='mpath', help="load MNet weight path", default=None)
+    parser.add_argument('-af1path', dest='af1path', help="load AF1 weight path", default=None)
+    parser.add_argument('-af2path', dest='af2path', help="load AF2 weight path", default=None)
+    parser.add_argument('-af3path', dest='af3path', help="load AF3 weight path", default=None)
 
     # training hyper-parameters
-    parser.add_argument('-nw', help="number of workers for dataloader",
+    parser.add_argument('-nw', dest='nw', help="number of workers for dataloader",
                         default=0, type=int)
-    parser.add_argument('-bs', help="batch size",
+    parser.add_argument('-bs', dest='bs', help="batch size",
                         default=1, type=int)
-    parser.add_argument('-lr', help="learning rate",
+    parser.add_argument('-lr', dest='lr', help="learning rate",
                         default=0.001, type=float)
     parser.add_argument('-mGPUs', dest='mGPUs',
                         help='whether use multiple GPUs',

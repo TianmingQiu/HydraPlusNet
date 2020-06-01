@@ -1,4 +1,4 @@
-from MNet import *
+from .MNet import *
 import pdb
 
 

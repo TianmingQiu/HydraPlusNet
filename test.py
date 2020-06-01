@@ -19,10 +19,10 @@ import torchvision.transforms as transforms
 
 import argparse
 
-import dataload
-from AF import AF
-from MNet import MNet
-from Hydraplus import HP
+from lib import dataload
+from lib.AF import AF
+from lib.MNet import MNet
+from lib.Hydraplus import HP
 
 import time
 import pdb

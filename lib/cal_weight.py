@@ -10,7 +10,7 @@ import torchvision.transforms as transforms
 
 import math
 
-import dataload
+from . import dataload
 
 mytransform = transforms.Compose([
 

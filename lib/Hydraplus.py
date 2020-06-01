@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from AF import AF
-from MNet import MNet
+from .AF import AF
+from .MNet import MNet
 
 class HP(nn.Module):
 

@@ -2,8 +2,7 @@
 
 an re-implementation of HydraPlus Net based on Pytorch.  
 MNet uses Inception_v3.  
-## example  
-![show](./img/show.png)    
+
 ## requirement  
 pytorch  
 visdom  
