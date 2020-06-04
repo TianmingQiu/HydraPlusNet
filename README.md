@@ -28,7 +28,7 @@ CUDA_VISIBLE_DEVICES=6,7 python train.py -m MNet -bs 128 -lr 0.01 -nw 16 -mGPUs
 ```
 And then we train the attention branch with MNet weights:
 ```shell script
-CUDA_VISIBLE_DEVICES=$GPU_ID python train.py -m AF2 -mpath checkpoint/MNet_epoch_995 -bs 128 -lr 0.01 -nw 16 -mGPUs
+CUDA_VISIBLE_DEVICES=$GPU_ID python train.py -m AF2 -mpath checkpoint/MNet_epoch_995 -bs 128 -lr 0.1 -nw 16 -mGPUs
 ```
 
 ## Test

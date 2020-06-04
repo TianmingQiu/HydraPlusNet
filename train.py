@@ -22,6 +22,7 @@ from lib import dataload
 
 from torch.autograd import Variable
 import argparse
+import logging
 import pdb
 import numpy as np
 # from visdom import Visdom
@@ -169,6 +170,11 @@ def main():
                                 momentum=0.9)
 
     running_loss = 0.0
+    logging.basicConfig(level=logging.DEBUG,
+                        filename=args.m + '.log',
+                        datefmt='%Y/%m/%d %H:%M:%S',
+                        format='%(asctime)s - %(message)s')
+    logger = logging.getLogger(__name__)
     for epoch in range(start_epoch, 1000):
         for i, data in enumerate(imgLoader, 0):
             # get the inputs
@@ -192,8 +198,8 @@ def main():
             # running_loss += loss.data[0]
             # running_loss += loss.item()
 
-            if i % 1000 == 0:  # todo: print every 1000 mini-batches
-                print('[  %d  %5d] loss: %.6f' % (epoch, i + 1, loss))
+            if i % 200 == 0:  # todo: print every 1000 mini-batches
+                logger.info('[  %d  %5d] loss: %.6f' % (epoch, i + 1, loss))
                 # viz.updateTrace(
                 #     X=np.array([epoch+i/5000.0]),
                 #     Y=np.array([running_loss]),
