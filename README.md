@@ -72,7 +72,7 @@ With the arguments [-att](https://github.com/TianmingQiu/HydraPlusNet/blob/maste
 
 ![show](./result/att_img_HP/091061.png) 
 
-- You can download the pre-trained checkpoints and attention pickle files from this [link](https://drive.google.com/drive/folders/10WcprvwgzDxQVoyXzyClhYm90zo-9Qgh?usp=sharing).
+- You can download the **pre-trained checkpoints** and **attention pickle files** from this [link](https://drive.google.com/drive/folders/10WcprvwgzDxQVoyXzyClhYm90zo-9Qgh?usp=sharing).
 
 - With the pickle files, you can easily have a look at the attention map by:
     ```shell script
