@@ -57,7 +57,7 @@ Or you can test the whole HydraPlus network:
 ```shell script
 python test.py -m HP -p checkpoint/HP_epoch_175 -att pkl_save
 ```
-With the arguments `-att`, you can choose to show the attention images or save them as pickle files.
+With the arguments [-att](https://github.com/TianmingQiu/HydraPlusNet/blob/master/test.py#L39), you can choose to show the attention images or save them as pickle files.
 
 ## Results
 |  |PA-100K|
@@ -78,4 +78,4 @@ With the pickle files, you can easily have a look at the attention map by:
 ```shell script
 python att_vis.py
 ```
-Of course, remember to modify the file directory.
+Of course, remember to modify the [file directory](https://github.com/TianmingQiu/HydraPlusNet/blob/master/att_vis.py#L63).
