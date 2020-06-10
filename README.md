@@ -1,4 +1,4 @@
-# Hydraplus_Net
+# HydraPlus Network
 A re-implementation of [HydraPlus Net](https://arxiv.org/abs/1709.09930) based on Pytorch.  
 With the help of [caffe implementtion](https://github.com/xh-liu/HydraPlus-Net) from original authors and another [pytorch version](https://github.com/CCC-123/Hydraplus_Net), 
 the repository implements the network structure the same as the [caffe version](https://github.com/xh-liu/HydraPlus-Net/tree/master/prototxt_example). 
@@ -68,14 +68,14 @@ With the arguments [-att](https://github.com/TianmingQiu/HydraPlusNet/blob/maste
 | Rec | 74.44% |
 | F1 | 78.08% |
 
-Attention results:
+- Attention results:
 
 ![show](./result/att_img_HP/091061.png) 
 
-You can download the pre-trained checkpoints and attention pickle files from this [link](https://drive.google.com/drive/folders/10WcprvwgzDxQVoyXzyClhYm90zo-9Qgh?usp=sharing).
+- You can download the pre-trained checkpoints and attention pickle files from this [link](https://drive.google.com/drive/folders/10WcprvwgzDxQVoyXzyClhYm90zo-9Qgh?usp=sharing).
 
-With the pickle files, you can easily have a look at the attention map by:
-```shell script
-python att_vis.py
-```
-Of course, remember to modify the [file directory](https://github.com/TianmingQiu/HydraPlusNet/blob/master/att_vis.py#L63).
+- With the pickle files, you can easily have a look at the attention map by:
+    ```shell script
+    python att_vis.py
+    ```
+    Of course, remember to modify the [file directory](https://github.com/TianmingQiu/HydraPlusNet/blob/master/att_vis.py#L63).
