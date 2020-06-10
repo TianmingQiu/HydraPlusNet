@@ -69,4 +69,13 @@ With the arguments `-att`, you can choose to show the attention images or save t
 | F1 | 78.08% |
 
 Attention results:
+
 ![show](./result/att_img_HP/091061.png) 
+
+You can download the pre-trained checkpoints and attention pickle files from this [link](https://drive.google.com/drive/folders/10WcprvwgzDxQVoyXzyClhYm90zo-9Qgh?usp=sharing).
+
+With the pickle files, you can easily have a look at the attention map by:
+```shell script
+python att_vis.py
+```
+Of course, remember to modify the file directory.
