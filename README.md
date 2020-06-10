@@ -12,12 +12,19 @@ CUDA 8.0
 - Download [link](https://drive.google.com/drive/folders/0B5_Ra3JsEOyOUlhKM0VPZ1ZWR2M)
 - The directory structure looks like:
 ```shell script
-|--HydraPlusNet  
-|----data  
-|------PA-100K  
-|--------annotation  
-|--------ralease_data  
-|----------release_data  
+.
+├── README.md
+├── att_vis.py
+├── checkpoint
+├── data
+│   └── PA-100K
+│       ├── annotation
+│       └── release_data
+│           └── release_data
+├── lib
+├── result
+├── test.py
+└── train.py
 ```
 
 
@@ -60,5 +67,6 @@ With the arguments `-att`, you can choose to show the attention images or save t
 | Prec | 82.08% |
 | Rec | 74.44% |
 | F1 | 78.08% |
+
 Attention results:
 ![show](./result/att_img_HP/091061.png) 
