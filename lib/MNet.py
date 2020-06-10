@@ -5,7 +5,7 @@ import pdb
 
 
 class MNet(nn.Module):
-    def __init__(self, num_classes=26, feat_out=False):  # todo: para definition
+    def __init__(self, num_classes=26, feat_out=False):
         super(MNet, self).__init__()
         self.Conv2d_1_7x7_s2 = BasicConv2d(3, 32, kernel_size=7, stride=2, padding=3)
         self.Conv2d_2_1x1 = BasicConv2d(32, 32, kernel_size=1)
@@ -39,7 +39,6 @@ class MNet(nn.Module):
         x3 = self.incept_block_3(x2)
         # x3 = 512 x 9 x9
 
-        # todo: size of 3 feature maps
         x = F.avg_pool2d(x3, kernel_size=9, stride=1)
         # 512 x1 x1
         x = F.dropout(x, training=self.training)
@@ -52,16 +51,6 @@ class MNet(nn.Module):
             return x0, x1, x2, x3
         else:
             return pred_class
-
-    # def incepts_weight_save(self, pretrained_model_path):
-    #     torch.save(self.state_dict(), 'data/pretrained_model/hp_mnet.pth')  # todo: dir change
-    #     torch.save(self.incept_block_1.state_dict(), 'data/pretrained_model/hp_mnet_incept1.pth')
-    #     torch.save(self.incept_block_2.state_dict(), 'data/pretrained_model/hp_mnet_incept2.pth')
-    #     torch.save(self.incept_block_3.state_dict(), 'data/pretrained_model/hp_mnet_incept3.pth')
-
-    # def init_w(self):
-    #     pretrained_state_dict = torch.load("data/pretrained_model/hp_mnet.pth")
-    #     self.load_state_dict(pretrained_state_dict)
 
 
 class InceptionA(nn.Module):

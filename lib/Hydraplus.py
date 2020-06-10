@@ -4,24 +4,39 @@ import torch.nn.functional as F
 from .AF import AF
 from .MNet import MNet
 
+
 class HP(nn.Module):
 
-    def __init__(self, num_classes=26):
+    def __init__(self, num_classes=26, att_out=False):
         super(HP, self).__init__()
-        self.MNet = MNet(feat_out=True)
-        self.AF1 = AF(feat_out=True, af_name="AF1")
-        self.AF2 = AF(feat_out=True, af_name="AF2")
-        self.AF3 = AF(feat_out=True, af_name="AF3")
+        self.att_out = att_out
+        if self.att_out:
+            with torch.no_grad():
+                self.MNet = MNet(feat_out=True)
+                self.AF1 = AF(att_out=True, feat_out=True, af_name="AF1")
+                self.AF2 = AF(att_out=True, feat_out=True, af_name="AF2")
+                self.AF3 = AF(att_out=True, feat_out=True, af_name="AF3")
+        else:
+            with torch.no_grad():
+                self.MNet = MNet(feat_out=True)
+                self.AF1 = AF(feat_out=True, af_name="AF1")
+                self.AF2 = AF(feat_out=True, af_name="AF2")
+                self.AF3 = AF(feat_out=True, af_name="AF3")
 
         self.fc = nn.Linear(512 * 73, num_classes)
 
     def forward(self, x):
-        _, _, _, F0 = self.MNet(x)
-        F1 = self.AF1(x)
-        F2 = self.AF2(x)
-        F3 = self.AF3(x)
+        _, _, _, feat0 = self.MNet(x)
+        if self.att_out:
+            feat1, att1 = self.AF1(x)
+            feat2, att2 = self.AF2(x)
+            feat3, att3 = self.AF3(x)
+        else:
+            feat1 = self.AF1(x)
+            feat2 = self.AF2(x)
+            feat3 = self.AF3(x)
 
-        ret = torch.cat((F0, F1, F2, F3), dim=1)
+        ret = torch.cat((feat0, feat1, feat2, feat3), dim=1)
         # 9 x 9 x (512x(24x3 + 1))
 
         ret = F.avg_pool2d(ret, kernel_size=9, stride=1)
@@ -35,5 +50,7 @@ class HP(nn.Module):
 
         ret = self.fc(ret)
         # (num_classes)
-
-        return ret
+        if self.att_out:
+            return att1, att2, att3, ret
+        else:
+            return ret

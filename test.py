@@ -24,10 +24,9 @@ from lib.AF import AF
 from lib.MNet import MNet
 from lib.Hydraplus import HP
 
-import time
 import pdb
 import pickle
-
+from att_vis import att_plot
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -35,14 +34,47 @@ def parse_args():
     parser.add_argument('-m', help="choose model", choices=['AF1', 'AF2', 'AF3', 'HP', 'MNet'], required=True)
     parser.add_argument('-p', help='wight file path', required=True)
 
-    # training hyper-parameters
-    parser.add_argument('-mGPUs', dest='mGPUs',
-                        help='whether use multiple GPUs',
-                        action='store_true')
-
+    parser.add_argument('-att',
+                        help='attention results',
+                        choices=['no_att',      # no attention test
+                                 'img_save',   # save attention results as img
+                                 'img_show',   # plot attention
+                                 'pkl_save'],  # save attention results as pickle file
+                        default='no_att')
     args = parser.parse_args()
 
     return args
+
+
+def model_pred(data_input, model_name, img_name, network, att_mode):
+    if att_mode == 'no_att':
+        outputs = network(data_input)
+    else:
+        if model_name == 'HP':
+            att1, att2, att3, outputs = network(data_input)
+            out_dict = {
+                "filename": img_name[0],
+                'AF1': att1[0].detach().numpy(),
+                'AF2': att2[0].detach().numpy(),
+                'AF3': att3[0].detach().numpy()
+            }
+
+        elif 'AF' in model_name:
+            outputs, att = network(data_input)
+            out_dict = {
+                "filename": img_name[0],
+                model_name: att[0].detach().numpy()
+            }
+
+        if att_mode == 'pkl_save':
+            pickle.dump(
+                out_dict,
+                open('result/att_output_' + model_name + '.pkl', 'ab')  # append
+            )
+        else:
+            att_plot(model_name, out_dict, att_mode)
+
+    return outputs
 
 
 def main():
@@ -76,14 +108,19 @@ def main():
         count = count + 1
 
     path = args.p
-    if 'AF' in args.m:
-        net = AF(att_out=True, af_name=args.m)
-    elif args.m == 'HP':
-        net = HP()
-    elif args.m == 'MNet':
-        net = MNet()
+
+    if args.att == 'no_att':
+        if 'AF' in args.m:
+            net = AF(af_name=args.m)
+        elif args.m == 'HP':
+            net = HP()
+        elif args.m == 'MNet':
+            net = MNet()
     else:
-        print('Error')
+        if 'AF' in args.m:
+            net = AF(att_out=True, af_name=args.m)
+        elif args.m == 'HP':
+            net = HP(att_out=True)
 
     net.load_state_dict(torch.load(path))
     print("para_load_done")
@@ -102,60 +139,56 @@ def main():
     Acc = 0.0
     Prec = 0.0
     Rec = 0.0
-    with open('result/' + args.m + '_att_output.pkl', "wb") as pkl_file:
-        while count < len(test_set):
-            images, labels, filename = dataiter.next()
-            inputs, labels = Variable(images, volatile=True).cuda(), Variable(labels).cuda()
-            if args.m == 'HP':
-                outputs, att1, att2, att3 = net(inputs)
-                out_dict = {
-                        "filename": filename,
-                        "alpha1": att1.cpu(),
-                        "alpha2": att2.cpu(),
-                        "alpha3": att3.cpu()
-                        }
-            elif 'AF' in args.m:
-                outputs, att = net(inputs)
-                out_dict = {
-                        "filename": filename,
-                        args.m: att.cpu()
-                        }
 
-            pickle.dump(out_dict, pkl_file)  # write attention results into pkl file
+    if args.att == 'pkl_save':
+        # overwrite the previous pickle file
+        pkl_file = 'result/att_output_' + args.m + '.pkl'
+        if os.path.exists(pkl_file):
+            os.remove(pkl_file)
 
-            Yandf = 0.1
-            Yorf = 0.1
-            Y = 0.1
-            f = 0.1
+    while count < 10:  # todo: full test set: len(test_set)
+        images, labels, filename = dataiter.next()
+        inputs, labels = Variable(images, volatile=True).cuda(), Variable(labels).cuda()
 
-            i = 0
-            print(count)
-            for item in outputs[0]:
-                if item.data.item() > 0:
-                    f = f + 1
-                    Yorf = Yorf + 1
-                    if labels[0][i].data.item() == 1:
-                        TP[i] = TP[i] + 1
-                        P[i] = P[i] + 1
-                        Y = Y + 1
-                        Yandf = Yandf + 1
-                    else :
-                        N[i] = N[i] + 1
+        outputs = model_pred(data_input=inputs,
+                             model_name=args.m,
+                             img_name=filename,
+                             network=net,
+                             att_mode=args.att)
+
+        Yandf = 0.1
+        Yorf = 0.1
+        Y = 0.1
+        f = 0.1
+
+        i = 0
+
+        for item in outputs[0]:
+            if item.data.item() > 0:
+                f = f + 1
+                Yorf = Yorf + 1
+                if labels[0][i].data.item() == 1:
+                    TP[i] = TP[i] + 1
+                    P[i] = P[i] + 1
+                    Y = Y + 1
+                    Yandf = Yandf + 1
                 else :
-                    if labels[0][i].data.item() == 0:
-                        TN[i] = TN[i] + 1
-                        N[i] = N[i] + 1
-                    else:
-                        P[i] = P[i] + 1
-                        Yorf = Yorf + 1
-                        Y = Y + 1
-                i = i + 1
-            Acc = Acc +Yandf/Yorf
-            Prec = Prec + Yandf/f
-            Rec = Rec + Yandf/Y
-            if count % 1000 == 0:
-                print(count)
-            count = count + 1
+                    N[i] = N[i] + 1
+            else :
+                if labels[0][i].data.item() == 0:
+                    TN[i] = TN[i] + 1
+                    N[i] = N[i] + 1
+                else:
+                    P[i] = P[i] + 1
+                    Yorf = Yorf + 1
+                    Y = Y + 1
+            i = i + 1
+        Acc = Acc +Yandf/Yorf
+        Prec = Prec + Yandf/f
+        Rec = Rec + Yandf/Y
+        if count % 1 == 0:
+            print('test on {}th img'.format(count))
+        count = count + 1
 
     Accuracy = 0
     print(TP)

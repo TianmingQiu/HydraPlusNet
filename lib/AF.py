@@ -96,9 +96,9 @@ class AF(nn.Module):
         if self.att_out:
             if self.feat_out:
                 # torch.cuda.synchronize()
-                return ret, att  # todo: compress attention for transfer
+                return ret, att.cpu()  # todo: compress attention for transfer
             else:
-                return pred_class, att
+                return pred_class, att.cpu()
         else:
             if self.feat_out:
                 return ret

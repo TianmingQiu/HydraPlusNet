@@ -171,7 +171,7 @@ def main():
 
     running_loss = 0.0
     logging.basicConfig(level=logging.DEBUG,
-                        filename=args.m + '.log',
+                        filename='./result/training_log/' + args.m + '.log',
                         datefmt='%Y/%m/%d %H:%M:%S',
                         format='%(asctime)s - %(message)s')
     logger = logging.getLogger(__name__)
